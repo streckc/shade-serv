@@ -1,9 +1,9 @@
 FROM node:10-alpine
 
-EXPOSE 8010
+EXPOSE 8088
 
 ENV NODE_ENV production
-ENV PORT 8010
+ENV PORT 8088
 # Run npm start to start up the app
 
 CMD [ "npm", "run", "serve" ]
