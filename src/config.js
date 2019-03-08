@@ -1,5 +1,5 @@
 const config = {};
 
-config.port = 8080;
+config.port = process.env.PORT || 8080;
 
 module.exports = config;
