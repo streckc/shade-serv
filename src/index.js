@@ -3,6 +3,7 @@
 const Hapi=require('hapi');
 const routes = require('./routes/index');
 const config = require('./config');
+const elasticRepo = require('./repositories/elasticRepo');
 
 console.clear() //clear console on start
 
@@ -21,8 +22,13 @@ const registerRoutes = () => {
         options: {
             auth: false
         },
-        handler: (request, h) => {
-            return {status: 'GOOD'}
+        handler: async (request, h) => {
+            try {
+                await elasticRepo.healthCheck();
+                return { status: 'GOOD' };
+            } catch(err) {
+                return { status: 'BAD', reason: err };
+            }
         }
     });
 }
@@ -31,6 +37,8 @@ const init = async () => {
     registerRoutes();
     
     await server.start();
+
+    await elasticRepo.connect();
     
     return server;
   
