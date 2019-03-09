@@ -1,4 +1,17 @@
-const system = require('./systemRoutes');
-const network = require('./networkRoutes');
+const handler = require('../handlers/handler');
+const handleError = require('../utils/handleError');
 
-module.exports = [].concat(system, network);
+const dataEndpoint = {
+  method:'POST',
+  path: '/',
+  handler: (request, h) => {
+    try {
+      handler.writeData(request.payload)
+  
+      return h.response().code(201);
+    } catch(err) {
+      return handleError(err);
+    }
+  }
+};
+module.exports = [dataEndpoint];

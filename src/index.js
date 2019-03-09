@@ -35,6 +35,8 @@ const registerRoutes = () => {
   
 const init = async () => {  
     registerRoutes();
+
+    server.settings.routes.validate.failAction = async (request, h, error) => error.isJoi && h.response(error.details).code(400).takeover();
     
     await server.start();
 

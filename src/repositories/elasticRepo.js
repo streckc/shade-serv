@@ -1,66 +1,36 @@
 const elasticsearch = require('elasticsearch');
+const config = require('../config');
+const mapping = require('./shadeMapping');
 
 let client;
 
-const connect = () => {
+const connect = async () => {
   client = new elasticsearch.Client({
-    host: 'localhost:9200',
+    host: config.elastic.host,
     log: 'trace'
   });
+
+  // await createIndex();
 }
 
-function create_UUID(){
-  var dt = new Date().getTime();
-  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = (dt + Math.random()*16)%16 | 0;
-      dt = Math.floor(dt/16);
-      return (c=='x' ? r :(r&0x3|0x8)).toString(16);
-  });
-  return uuid;
-}
-
-const writeSystemData = (location, body) => {
-  const id = create_UUID();
-  client.create(
+const writeData = (body) => {
+  client.index(
     {
-      index: 'shade-system',
-      type: location,
-      id,
+      index: 'shade-'+body.name,
+      type: body.name,
       body
     }
   );
-
-  return id;
 }
 
-const writeNetworkData = (location, body) => {
-  const id = create_UUID();
-  client.create(
-    {
-      index: 'shade-network',
-      type: location,
-      id,
-      body
-    }
-  );
+const createIndex = async () => {
 
-  return id;
-}
-
-const getSystemCount = async () => {
-  const { count } = await client.count({
-    index: 'shade-system'
-  });
-
-  return count;
-}
-
-const getNetworkCount = async () => {
-  const { count } = await client.count({
-    index: 'shade-network'
-  });
-
-  return count;
+  if(!await client.indices.exists({index: config.elastic.index})) {
+    await client.indices.create({
+      index: config.elastic.index,
+      body: mapping
+    });
+  }
 }
 
 const healthCheck = () => {
@@ -79,9 +49,6 @@ const healthCheck = () => {
 
 module.exports = {
   connect,
-  writeSystemData,
-  writeNetworkData,
-  getSystemCount,
-  getNetworkCount,
+  writeData,
   healthCheck
 }

@@ -1,0 +1,65 @@
+{
+	"settings": {
+		"number_of_shards": 1,
+		"number_of_replicas": 0,
+		"max_result_window": 400000
+	},
+	"mappings": {
+		"system": {
+			"_all": {
+				"enabled": false
+			},
+			"properties": {
+				"end_ts": {
+					"type": "date"
+				},
+				"type": {
+					"type": "keyword"
+				},
+				"data": {
+					"properties": {
+						"cpu_idle": {
+							"type": "integer"
+						},
+						"cpu_sys": {
+							"type": "integer"
+						},
+						"cpu_user": {
+							"type": "integer"
+						},
+						"mem_buff": {
+							"type": "long"
+						},
+						"mem_cache": {
+							"type": "long"
+						},
+						"mem_free": {
+							"type": "long"
+						},
+						"mem_swpd": {
+							"type": "long"
+						},
+						"procs_run": {
+							"type": "integer"
+						},
+						"Procs_sleep": {
+							"type": "integer"
+						}
+					}
+				},
+				"exception": {
+					"type": "text"
+				},
+				"error": {
+					"type": "text"
+				},
+				"start_ts": {
+					"type": "date"
+				},
+				"name": {
+					"type": "keyword"
+				}
+			}
+		}
+	}
+}
